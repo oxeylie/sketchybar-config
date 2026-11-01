@@ -31,7 +31,7 @@ function mod.setup(palette)
   	margin   = mod.config.margin,
   	position = "top",
 
-  	topmost = "everything",
+  	topmost = true,
   	sticky  = true,
 
   	padding_left  = 0, -- Set to 0 since logo updates padding itself

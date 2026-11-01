@@ -8,11 +8,12 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
+    { nixpkgs, ... }:
     let
       system = "aarch64-darwin";
 
-      /* sbarlua-derivation =
+      /*
+        sbarlua-derivation =
         { pkgs, inputs, ... }:
         pkgs.stdenv.mkDerivation {
           name = "sbarlua";
@@ -31,15 +32,18 @@
             mkdir -p $out/lib/sketchybar
             cp bin/sketchybar.so $out/lib/sketchybar/
           '';
-        }; */
+        };
+      */
 
       pkgs = import nixpkgs {
         inherit system;
-        /* overlays = [
-          (self: super: {
-            sbarlua = super.callPackage sbarlua-derivation { inherit inputs; };
-          })
-        ]; */
+        /*
+          overlays = [
+            (self: super: {
+              sbarlua = super.callPackage sbarlua-derivation { inherit inputs; };
+            })
+          ];
+        */
       };
 
     in
