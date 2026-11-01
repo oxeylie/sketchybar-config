@@ -12,43 +12,25 @@
     let
       system = "aarch64-darwin";
 
-      /*
-        sbarlua-derivation =
-        { pkgs, inputs, ... }:
-        pkgs.stdenv.mkDerivation {
-          name = "sbarlua";
-
-          src = inputs.sbarlua;
-
-          nativeBuildInputs = [
-            pkgs.gcc
-          ];
-
-          buildInputs = [
-            pkgs.readline
-          ];
-
-          installPhase = ''
-            mkdir -p $out/lib/sketchybar
-            cp bin/sketchybar.so $out/lib/sketchybar/
-          '';
-        };
-      */
-
       pkgs = import nixpkgs {
         inherit system;
-        /*
-          overlays = [
-            (self: super: {
-              sbarlua = super.callPackage sbarlua-derivation { inherit inputs; };
-            })
-          ];
-        */
+
+        overlays = [
+          (final: prev: {
+            sketchybar = prev.sketchybar.overrideAttrs (old: {
+              postPatch = (old.postPatch or "") + ''
+                sed -i '296s/kCGStatusWindowLevel/kCGPopUpMenuWindowLevel/' src/bar_manager.c
+                sed -n '296p' src/bar_manager.c   # shows the result in the build log
+              '';
+            });
+          })
+        ];
+
       };
 
     in
     {
-      packages."${system}".sbarlua = pkgs.sbarlua;
+      packages."${system}" = pkgs;
 
       devShells."${system}".default = pkgs.mkShell {
         packages = with pkgs; [
