@@ -3,8 +3,17 @@ require("helpers")
 local icons   = require("helpers/icons")
 
 log("lua-main","$PATH: " .. os.getenv("PATH") .. "")
-sbar.exec("command -V bash", function(result,exit_code)
-	log("lua-main", "bash: ".. result)
+sbar.exec([[
+exe() { lsof -p "$1" -a -d txt -Fn 2>/dev/null | sed -n 's/^n//p' | head -n1; }
+
+pid=$$
+printf 'pid:%s ancestor tree\n' "$pid"
+while [ -n "$pid" ] && [ "$pid" -gt 0 ]; do
+  printf '+--pid: %s\tpath: %s\tcmd: %s\n' "$pid" "$(exe "$pid")" "ps -p $pid -o command="
+  pid=$(ps -p "$pid" -o ppid= | tr -d ' ')
+done
+]], function(result,exit_code)
+	log("lua-main", result)
 end)
 
 -- Globals
@@ -26,6 +35,7 @@ menu_items = {
   display        = { app = system_menu_host, id = "com.apple.menuextra.display" },
   user_switcher  = { app = system_menu_host, id = "com.apple.menuextra.user" },
   media_player   = { app = system_menu_host, id = "com.apple.menuextra.now-playing" },
+  live_player    = { app = system_menu_host, id = "live-activity-pill-com.apple.MediaRemoteUIService" },
 	bluetooth      = { app = system_menu_host, id = "com.apple.menuextra.bluetooth", icon = icons.link };
 	control_center = { app = system_menu_host, id = "com.apple.menuextra.controlcenter", icon = icons.control_center }
 }
