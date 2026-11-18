@@ -2,6 +2,11 @@
 require("helpers")
 local icons   = require("helpers/icons")
 
+log("lua-main","$PATH: " .. os.getenv("PATH") .. "")
+sbar.exec("command -V bash", function(result,exit_code)
+	log("lua-main", "bash: ".. result)
+end)
+
 -- Globals
 os_version = macOSversion()
 
